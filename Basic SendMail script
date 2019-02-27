@@ -1,0 +1,50 @@
+#Email attributes
+$smtp = ""
+$from = ""
+$to = ""
+
+# email
+$subject = "email received"
+$title = "SendMail"
+$message = "Hello, I am a simple powershell script to send e-mails."
+
+#Email template
+$Style = @"
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style type="text/css">
+body{margin: 50px;background-color: #FFF;font-family: sans-serif;}
+.card{background-color: rgba(0,0,0,0.5);height: 350px;width: 650px;border-radius: 10px;margin-left: auto;margin-right: auto;margin-top: 50px;color: white;box-shadow: 4px 4px 30px black;cursor: pointer;padding:20px;}
+.card h2{margin-top: 10px;margin-bottom: 30px;color: #dc143c;}
+.card p{margin-left: 5px;margin-right: 5px;}
+.card li{list-style: none;margin-top: 35px;}
+.card a{border: 1px solid #dc143c;text-decoration: none;color: #dc143c;padding: 10px 20px;} 
+</style>
+"@
+
+$ebody = @"
+<table class="body">
+    <tr>
+      <!-- The class, align, and <center> tag center the container -->
+      <td class="card float-center" align="center" valign="top">
+        <center>
+        <h2>$title</h2>
+        <p>$message</p>
+        <li><a href="#">Read More</a></li>
+        </center>
+      </td>
+    </tr>
+  </table>
+"@
+
+#saving to file
+$reportpath ='c:\fileTask'
+
+#Converitng file to html
+$report | ConvertTo-Html -body $ebody -Head $style| Out-File $reportpath
+$body = [System.IO.File]::ReadAllText("$reportpath")
+
+#sending the email
+Send-MailMessage -From $from -To $to -Subject $subject -Smtp $smtp -Body $body -bodyashtml
+
